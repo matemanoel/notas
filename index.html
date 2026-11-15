@@ -3,136 +3,68 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Boletim Escolar - 2º Ano</title>
 
 <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+    background: #f2f2f2;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #174c80;
+}
+
+.dados {
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #999;
+    padding: 9px;
+    text-align: center;
+}
+
+th {
+    background: #174c80;
+    color: white;
+}
+
+td:first-child {
+    text-align: left;
+}
+
+.aprovado {
+    color: green;
+    font-weight: bold;
+}
+
+.recuperacao {
+    color: #c07800;
+    font-weight: bold;
+}
+
+@media print {
     body {
-        font-family: Arial, sans-serif;
-        background: #f0f3f7;
-        margin: 20px;
-        color: #222;
-    }
-
-    .container {
-        max-width: 1100px;
-        margin: auto;
         background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px #ccc;
+        margin: 0;
     }
-
-    h1, h2 {
-        text-align: center;
-        color: #174c80;
-    }
-
-    .dados {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        margin-bottom: 20px;
-    }
-
-    input {
-        padding: 9px;
-        border: 1px solid #bbb;
-        border-radius: 5px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-
-    th, td {
-        border: 1px solid #ccc;
-        padding: 9px;
-        text-align: center;
-    }
-
-    th {
-        background: #174c80;
-        color: white;
-    }
-
-    td:first-child {
-        text-align: left;
-        font-weight: bold;
-    }
-
-    td input {
-        text-align: center;
-        min-width: 55px;
-    }
-
-    .media {
-        font-weight: bold;
-        background: #eaf2f8;
-    }
-
-    .aprovado {
-        color: green;
-        font-weight: bold;
-    }
-
-    .recuperacao {
-        color: #c07800;
-        font-weight: bold;
-    }
-
-    button {
-        padding: 11px 18px;
-        margin: 12px 5px 5px 0;
-        border: none;
-        border-radius: 5px;
-        background: #174c80;
-        color: white;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background: #286da8;
-    }
-
-    .config {
-        margin-top: 20px;
-        max-width: 250px;
-    }
-
-    @media (max-width: 650px) {
-        .dados {
-            grid-template-columns: 1fr;
-        }
-
-        .container {
-            padding: 10px;
-            overflow-x: auto;
-        }
-
-        table {
-            min-width: 700px;
-        }
-    }
-
-    @media print {
-        body {
-            background: white;
-            margin: 0;
-        }
-
-        .container {
-            box-shadow: none;
-        }
-
-        button, .config {
-            display: none;
-        }
-    }
+}
 </style>
 </head>
 
@@ -144,266 +76,102 @@
 <h2>2º Ano do Ensino Médio – Paraná</h2>
 
 <div class="dados">
-    <div>
-        <label>Nome do aluno:</label>
-        <input type="text" id="aluno">
-    </div>
-
-    <div>
-        <label>Instituição de ensino:</label>
-        <input type="text" id="escola">
-    </div>
-
-    <div>
-        <label>Turma:</label>
-        <input type="text" id="turma">
-    </div>
-
-    <div>
-        <label>Ano letivo:</label>
-        <input type="number" id="ano" value="2026">
-    </div>
+    <b>Aluno:</b> João da Silva<br>
+    <b>Escola:</b> Colégio Estadual do Paraná<br>
+    <b>Turma:</b> 2º Ano A<br>
+    <b>Ano letivo:</b> 2026
 </div>
-
-<div class="config">
-    <label><b>Média mínima para aprovação:</b></label>
-    <input type="number" id="limite" value="6" min="0" max="10"
-           step="0.1" onchange="calcular()">
-</div>
-
-<h2>Notas por componente curricular</h2>
 
 <table>
 <thead>
 <tr>
     <th>Componente Curricular</th>
-    <th>1º Trimestre</th>
-    <th>2º Trimestre</th>
-    <th>3º Trimestre</th>
-    <th>Média Anual</th>
+    <th>1º Tri.</th>
+    <th>2º Tri.</th>
+    <th>3º Tri.</th>
+    <th>Média</th>
     <th>Situação</th>
 </tr>
 </thead>
 
-<tbody id="disciplinas"></tbody>
+<tbody id="boletim"></tbody>
 
 </table>
 
-<button onclick="adicionar()">+ Adicionar componente</button>
-<button onclick="calcular()">Calcular médias</button>
-<button onclick="salvar()">Salvar boletim</button>
-<button onclick="window.print()">Imprimir boletim</button>
-
-<p><b>Legenda:</b> Aprovado / Em recuperação / Pendente.</p>
+<h3 id="resultado"></h3>
 
 </div>
 
 <script>
 
-// Componentes curriculares iniciais.
-// A lista deve ser adaptada à matriz da escola.
+// Dados previamente informados
 
-const componentes = [
-    "Língua Portuguesa",
-    "Língua Inglesa",
-    "Arte",
-    "Educação Física",
-    "Matemática",
-    "Biologia",
-    "Física",
-    "Química",
-    "História",
-    "Geografia",
-    "Filosofia",
-    "Sociologia",
-    "Educação Financeira",
-    "Educação Digital e Computação",
-    "Projeto de Vida",
-    "Itinerário Formativo de Aprofundamento",
-    "Eletiva"
+const notas = [
+["Língua Portuguesa", 7.0, 8.0, 7.5],
+["Língua Inglesa", 8.0, 7.5, 9.0],
+["Arte", 9.0, 8.5, 9.0],
+["Educação Física", 9.0, 9.5, 10.0],
+["Matemática", 6.0, 7.0, 8.0],
+["Biologia", 7.5, 8.0, 7.0],
+["Física", 6.5, 7.0, 8.0],
+["Química", 7.0, 6.5, 8.0],
+["História", 8.0, 7.5, 8.5],
+["Geografia", 7.0, 8.0, 7.5],
+["Filosofia", 8.0, 9.0, 8.5],
+["Sociologia", 9.0, 8.0, 9.0],
+["Educação Financeira", 8.0, 8.5, 9.0],
+["Educação Digital e Computação", 9.0, 9.0, 8.5],
+["Projeto de Vida", 9.0, 8.5, 9.0]
 ];
 
-const corpo = document.getElementById("disciplinas");
+const mediaMinima = 6.0;
 
-function criarLinha(nome) {
+let html = "";
+let aprovadas = 0;
+let recuperacao = 0;
 
-    const linha = document.createElement("tr");
+notas.forEach(item => {
 
-    const nomeTd = document.createElement("td");
-    const nomeInput = document.createElement("input");
+    const nome = item[0];
 
-    nomeInput.type = "text";
-    nomeInput.value = nome;
-    nomeInput.className = "nome-disciplina";
+    const n1 = item[1];
+    const n2 = item[2];
+    const n3 = item[3];
 
-    nomeTd.appendChild(nomeInput);
-    linha.appendChild(nomeTd);
+    const media = (n1 + n2 + n3) / 3;
 
-    for (let i = 1; i <= 3; i++) {
+    let situacao;
 
-        const td = document.createElement("td");
-        const nota = document.createElement("input");
-
-        nota.type = "number";
-        nota.min = "0";
-        nota.max = "10";
-        nota.step = "0.1";
-        nota.placeholder = "0 a 10";
-        nota.className = "nota";
-
-        nota.addEventListener("input", calcular);
-
-        td.appendChild(nota);
-        linha.appendChild(td);
+    if (media >= mediaMinima) {
+        situacao = "Aprovado";
+        aprovadas++;
+    } else {
+        situacao = "Em recuperação";
+        recuperacao++;
     }
 
-    const media = document.createElement("td");
-    media.className = "media";
-    media.textContent = "-";
-    linha.appendChild(media);
+    const classe = media >= mediaMinima
+        ? "aprovado"
+        : "recuperacao";
 
-    const situacao = document.createElement("td");
-    situacao.textContent = "Pendente";
-    linha.appendChild(situacao);
+    html += `
+    <tr>
+        <td>${nome}</td>
+        <td>${n1.toFixed(1)}</td>
+        <td>${n2.toFixed(1)}</td>
+        <td>${n3.toFixed(1)}</td>
+        <td><b>${media.toFixed(1)}</b></td>
+        <td class="${classe}">${situacao}</td>
+    </tr>
+    `;
 
-    corpo.appendChild(linha);
-}
+});
 
-componentes.forEach(criarLinha);
+document.getElementById("boletim").innerHTML = html;
 
-// Adicionar novos componentes curriculares
-
-function adicionar() {
-
-    const nome = prompt("Digite o nome do componente curricular:");
-
-    if (nome && nome.trim() !== "") {
-        criarLinha(nome.trim());
-    }
-}
-
-// Calcular média dos três trimestres
-
-function calcular() {
-
-    const limite = Number(document.getElementById("limite").value);
-
-    if (!Number.isFinite(limite) || limite < 0 || limite > 10) {
-        alert("Informe uma média mínima entre 0 e 10.");
-        return;
-    }
-
-    document.querySelectorAll("#disciplinas tr").forEach(linha => {
-
-        const notas = linha.querySelectorAll(".nota");
-        const media = linha.cells[4];
-        const situacao = linha.cells[5];
-
-        const valores = Array.from(notas).map(campo => campo.value);
-
-        const preenchidas = valores.filter(v => v !== "");
-
-        const invalidas = preenchidas.some(v => {
-            const n = Number(v);
-            return !Number.isFinite(n) || n < 0 || n > 10;
-        });
-
-        if (invalidas) {
-            media.textContent = "Inválida";
-            situacao.textContent = "Verificar notas";
-            situacao.className = "recuperacao";
-            return;
-        }
-
-        if (preenchidas.length < 3) {
-            media.textContent = "-";
-            situacao.textContent = "Pendente";
-            situacao.className = "";
-            return;
-        }
-
-        const soma = valores.reduce((total, v) => total + Number(v), 0);
-
-        const resultado = soma / 3;
-
-        media.textContent = resultado.toFixed(1);
-
-        if (resultado >= limite) {
-            situacao.textContent = "Aprovado";
-            situacao.className = "aprovado";
-        } else {
-            situacao.textContent = "Em recuperação";
-            situacao.className = "recuperacao";
-        }
-
-    });
-}
-
-// Salvar dados no navegador
-
-function salvar() {
-
-    const dados = {
-        aluno: document.getElementById("aluno").value,
-        escola: document.getElementById("escola").value,
-        turma: document.getElementById("turma").value,
-        ano: document.getElementById("ano").value,
-        limite: document.getElementById("limite").value,
-        disciplinas: []
-    };
-
-    document.querySelectorAll("#disciplinas tr").forEach(linha => {
-
-        dados.disciplinas.push({
-            nome: linha.querySelector(".nome-disciplina").value,
-            notas: Array.from(linha.querySelectorAll(".nota"))
-                         .map(n => n.value)
-        });
-
-    });
-
-    localStorage.setItem("boletimEscolar", JSON.stringify(dados));
-
-    alert("Boletim salvo neste navegador!");
-
-}
-
-// Recuperar dados salvos ao abrir o programa
-
-function carregar() {
-
-    const dados = localStorage.getItem("boletimEscolar");
-
-    if (!dados) return;
-
-    const boletim = JSON.parse(dados);
-
-    document.getElementById("aluno").value = boletim.aluno;
-    document.getElementById("escola").value = boletim.escola;
-    document.getElementById("turma").value = boletim.turma;
-    document.getElementById("ano").value = boletim.ano;
-    document.getElementById("limite").value = boletim.limite;
-
-    corpo.innerHTML = "";
-
-    boletim.disciplinas.forEach(d => {
-
-        criarLinha(d.nome);
-
-        const linha = corpo.lastElementChild;
-        const notas = linha.querySelectorAll(".nota");
-
-        d.notas.forEach((valor, i) => {
-            notas[i].value = valor;
-        });
-
-    });
-
-    calcular();
-
-}
-
-carregar();
+document.getElementById("resultado").innerHTML =
+    "Componentes com média suficiente: " + aprovadas +
+    "<br>Componentes em recuperação: " + recuperacao;
 
 </script>
 
